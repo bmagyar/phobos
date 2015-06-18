@@ -3,7 +3,7 @@
 """
 .. module:: phobos.utils.blender
     :platform: Unix, Windows, Mac
-    :synopsis: This module contains functions o manipulate blender objects and interact with blender functionalities
+    :synopsis: This module contains functions to manipulate blender objects and interact with blender functionalities
 
 .. moduleauthor:: Kai von Szadowski, Ole Schwiegert
 
@@ -33,6 +33,13 @@ from phobos.logging import log
 
 
 def printMatrices(obj, info=None):
+    """This function prints all blender intern matrices of a given object to stdout.
+
+    :param obj: The object to print the matrices for.
+    :param info: The objects name or other info you want to be printed. If None is given the objects phobos-name is used.
+    :type info: string
+    :return: Nothing.
+    """
     if not info:
         info = selection.getObjectName(obj)
     print("\n----------------", info, "---------------------\n",
@@ -43,11 +50,18 @@ def printMatrices(obj, info=None):
 
 
 def assignMaterial(obj, materialname):
+    """This function appends a material to a given object.
+    The material has to be defined in the defs.
+
+    :param obj: The object to assign the material to.
+    :param materialname: The materials name you want to assign.
+    :type materialname: string
+    :return: Nothing.
+    """
     if materialname not in bpy.data.materials:
         if materialname in defs.defaultmaterials:
             materials.createPhobosMaterials()
         else:
-            # print("###ERROR: material to be assigned does not exist.")
             log("Material to be assigned does not exist.", "ERROR")
             return None
     obj.data.materials.append(bpy.data.materials[materialname])
@@ -57,7 +71,24 @@ def assignMaterial(obj, materialname):
 
 def createPrimitive(pname, ptype, psize, player=0, pmaterial="None", plocation=(0, 0, 0), protation=(0, 0, 0),
                     verbose=False):
-    """Generates the primitive specified by the input parameters"""
+    """This function creates a primitive specified by its parameters.
+
+    :param pname: The primitives new blender name
+    :param ptype: The new primitives type. Its one of box, sphere, cylinder, cone or disc
+    :type ptype: string
+    :param psize: The new primitives sizes. The type depends on the ptype.
+    box - number
+    sphere - numberq
+    cylinder - (number, number) -> (radius, depth)
+    cone - (number, number) -> (radius, depth)
+    disc - (number, number) -> (radius, vertices)
+    :param player: TODO: Please specify player
+    :param pmaterial: The material to assign to the new primitive
+    :param plocation: The new primitives location
+    :param protation: The new primitives rotation
+    :param verbose: True for verbose mode
+    :return: The newly created object
+    """
     if verbose:
         print(ptype, psize)
     try:
